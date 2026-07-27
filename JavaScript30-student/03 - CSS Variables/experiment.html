@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+.container {
+    width: 720px;
+    height: 720px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+ }
+.eyeball {
+    width: 700px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 3 / 2;
+    background:#282631;
+    border: inset 10px #DAE5CF;
+    border-shape: shape(from 0 50%,
+        arc to 100% 50% of 100% cw,
+        arc to 0% 50% of 100% cw);
+    clip-path: shape(from 0 50%,
+        arc to 100% 50% of 100% cw,
+        arc to 0% 50% of 100% cw);
+}
+.pupil {
+    width: 150px;
+    aspect-ratio: 1;
+    background-color: #DAE5CF;
+    clip-path: circle();
+}
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: grid;
+  background: #282631;
+  place-content: center;
+  align-items: center;
+}
+      
+    @keyframes squigglevision {
+      0% {
+        filter: url("#turbulence-1");
+      }
+      25% {
+        filter: url("#turbulence-2");
+      }
+      50% {
+        filter: url("#turbulence-3");
+      }
+      75% {
+        filter: url("#turbulence-4");
+      }
+      100% {
+        filter: url("#turbulence-5");
+      }
+    }
+    .squiggle {
+      animation: squigglevision 0.4s infinite alternate;
+    }
+    </style>
+</head>
+<body>
+<div class="container squiggle"> <div class="eyeball"> <div class="pupil"></div> </div> </div>
+
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" style="position:absolute">
+  <defs>
+    <filter id="turbulence-1">
+      <feTurbulence id="turbulence" baseFrequency="0.02" numOctaves="3" result="noise" seed="0"/>
+      <feDisplacementMap id="displacement" in="SourceGraphic" in2="noise" scale="2" />
+    </filter>
+    <filter id="turbulence-2">
+      <feTurbulence id="turbulence" baseFrequency="0.02" numOctaves="3" result="noise" seed="1"/>
+<feDisplacementMap in="SourceGraphic" in2="noise" scale="3" />
+    </filter>
+    
+    <filter id="turbulence-3">
+      <feTurbulence id="turbulence" baseFrequency="0.02" numOctaves="3" result="noise" seed="2"/>
+<feDisplacementMap in="SourceGraphic" in2="noise" scale="2" />
+    </filter>
+    <filter id="turbulence-4">
+      <feTurbulence id="turbulence" baseFrequency="0.02" numOctaves="3" result="noise" seed="3"/>
+<feDisplacementMap in="SourceGraphic" in2="noise" scale="3" />
+    </filter>
+    <filter id="turbulence-5">
+      <feTurbulence id="turbulence" baseFrequency="0.02" numOctaves="3" result="noise" seed="4"/>
+<feDisplacementMap in="SourceGraphic" in2="noise" scale="1" />
+    </filter>
+        <filter id="turb">
+      <feTurbulence baseFrequency="0.3" numOctaves="2" />
+      <feDisplacementMap in="SourceGraphic" scale="20" />
+    </filter>
+  </defs> 
+</svg>
+
+<script>
+    // probably the way it tracks mousemovement needs to be rewritten wwith the non svg css we use now
+eye = document.querySelector(".eyeball")
+pupil = document.querySelector(".pupil")
+eyeArea = eye.getBoundingClientRect(),
+pupil_Area = pupil.getBoundingClientRect(),
+R = eyeArea.width/2,
+r = pupil_Area.width/2,
+centerX = eyeArea.left + R,
+centerY = eyeArea.top + R;
+
+document.addEventListener("mousemove", (e)=>{
+  let x = e.clientX - centerX,
+      y = e.clientY - centerY,
+      theta = Math.atan2(y,x),
+      angle = theta*180/Math.PI + 360;
+    pupil.style.transform = `translateX(${R - r +"px"}) rotate(${angle + "deg"})`;
+    pupil.style.transformOrigin = `${r +"px"} center`;
+  });
+</script>
+</body>
+</html>
